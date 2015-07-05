@@ -12,7 +12,7 @@ var AboutMe = React.createClass({
 var Greeting = React.createClass({
   render: function() {
     var sayHello = function() {
-      var greetings = ['Hello', 'Hola', 'Привет', 'こんにちは'];
+      var greetings = ['Hello', '¡Hola', 'Привет', 'こんにちは'];
       var minutes = (new Date()).getMinutes();
       return greetings[minutes % greetings.length] + "!";
     };
