@@ -5,7 +5,10 @@ var Container = React.createClass({
         <tbody>
           <tr>
             <td>
-              <Project name="Asteroid" gif="assets/asteroid.gif" href="https://github.com/maximpertsov/asteroid"/>
+              <Project
+                name="Asteroid"
+                gif="assets/asteroid.gif"
+                href="https://github.com/maximpertsov/asteroid"/>
             </td>
           </tr>
         </tbody>
@@ -37,7 +40,11 @@ var Project = React.createClass({
             <tr>
               <td>
                 <p>
-                  Blurb...
+                  Basic asteroid game. Inspired by RiceRocks projects from
+                  the 'Introduction to Interactive Programming in Python' class on Coursera.
+                  Implemented in Ruby using the Gosu 2D graphics library. Artwork by
+                  Kim Lapthrop and Rob <a
+                  href="http://robsonbillponte666.deviantart.com">robsonbillponte666</a>.
                 </p>
               </td>
             </tr>
