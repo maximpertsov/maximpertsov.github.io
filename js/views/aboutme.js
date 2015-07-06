@@ -29,7 +29,7 @@ var Blurb = React.createClass({
     return (
       <div className="blurb">
         <p>
-          Welcome to my github site. Check out some of my projects below:
+          Welcome to my github site. Check out some of my projects below.
         </p>
       </div>
     );
