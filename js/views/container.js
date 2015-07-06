@@ -60,9 +60,3 @@ var Project = React.createClass({
     );
   }
 });
-
-// Basic asteroid game. Inspired by RiceRocks projects from
-// the 'Introduction to Interactive Programming in Python' class on Coursera.
-// Implemented in Ruby using the Gosu 2D graphics library. Artwork by
-// Kim Lapthrop and Rob <a
-// href='http://robsonbillponte666.deviantart.com'>robsonbillponte666</a>.

@@ -2,7 +2,8 @@ var NavBar = React.createClass({
   getInitialState: function() {
     return {
       links: [
-      	{href: 'index.html', text: 'Home'}
+      	{href: 'index.html', text: 'Home'},
+        {href: 'https://github.com/maximpertsov', text: 'Github'}
       ]
     };
   },
