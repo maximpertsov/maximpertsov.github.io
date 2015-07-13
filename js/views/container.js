@@ -18,7 +18,7 @@ var Container = React.createClass({
                        gif="assets/asteroid.gif"
                        href="https://github.com/maximpertsov/asteroid"
                        text="Basic asteroid game, with slightly more explosive weaponry, and
-                          yarnballs instead on asteroids. Inspired by RiceRocks projects from
+                          yarnballs instead on asteroids. Inspired by the RiceRocks project from
                           the Introduction to Interactive Programming in Python class on
                           Coursera. Implemented in Ruby using the Gosu 2D graphics library."/>
             </td>
