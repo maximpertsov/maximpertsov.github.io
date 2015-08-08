@@ -1,0 +1,153 @@
+/* ------------------- */
+/* basic HTML elements */
+/* ------------------- */
+a {
+    text-decoration: none;
+    color: #999;
+}
+a:hover {
+    text-decoration: underline;
+}
+table, img {
+    width: 100%;
+    margin: 0 10px 10px 0;
+}
+img {
+    border-style: solid;
+    border-width: thin;
+}
+table, thead, tbody {
+    font-family: Lucida Sans Unicode, Lucida Grande, Sans-Serif;
+    border: thin solid; /* #039; */
+}
+th { 
+    background: #aaa/* b9c9fe */;
+    /* color: #/\* 039 *\/; */
+}
+th.left{
+    text-align: left;
+}
+/* td { */
+/*     /\* background: #eee/\\* e8edff *\\/; *\/ */
+/*     /\* color: #669; *\/ */
+/* }  */
+tbody tr:hover td {
+    background: #ccc/* d0dafd */;
+    /* color: #339; */
+}
+/* #box-table-a{font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;font-size:12px;width:480px;text-align:left;border-collapse:collapse;margin:20px;} */
+/* #box-table-a th{font-size:13px;font-weight:normal;background:#b9c9fe;border-top:4px solid #aabcfe;border-bottom:1px solid #fff;color:#039;padding:8px;} */
+/* #box-table-a td{background:#e8edff;border-bottom:1px solid #fff;color:#669;border-top:1px solid transparent;padding:8px;} */
+/* #box-table-a tr:hover td{background:#d0dafd;color:#339;} */
+/* ------------ */
+/* Org mode TOC */
+/* ------------ */
+body {                                    
+    margin: 60px;
+    width: 80%; 
+    /* max-width: 1000px;  */
+    font: small Lucida Sans Unicode, Lucida Grande, Sans-Serif;
+     /* background: #eee; */
+    /* debug */
+    border: dotted thin; 
+    /* overflow-x: auto; */
+    /* overflow-y: scroll; */
+    /* position: fixed; */
+    /* height: 100%;    */
+}
+#table-of-contents, .outline-2 {
+    border: dotted thin;
+    overflow-x: auto;
+    overflow-y: scroll;
+    position: fixed;
+    height: 80%;
+}
+#table-of-contents {
+    /* width: 15%; */
+    /* max- */
+    width: 200px;
+}
+.outline-2 {
+    margin-left: 1em;
+    width: 60%;
+    max-width: 45em;
+    left: 30%;
+}
+.outline-2 h2, .title {
+    display: none;
+}
+.outline-3 {
+    margin: 1% 0;
+    padding: 0 1%;
+}
+.outline-3 h3 {
+    text-align: center;
+}
+.outline-text-3, .outline-4 p {
+    margin: 0 0 1em 0;
+    border-style: dotted none dotted none;
+    border-width: thin;
+}
+#table-of-contents ul {
+    list-style: none; /* Remove default numbering */
+    font-weight: bold;
+    font-family: Lucida Sans Unicode, Lucida Grande, Sans-Serif;
+    padding: 0;
+    margin-bottom: 4em;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+/* Small hack to change header above table of contents */
+#table-of-contents h2 { /* Hide default 'Table of Contents' header */
+    display: none;
+}
+/* #table-of-contents:before { /\* Show desired text in header *\/ */
+/*     content: "Agenda"; */
+/*     display: block; */
+/*     font-size: 1.5em; */
+/*     margin-top: 0.83em; */
+/*     margin-bottom: 0.83em; */
+/*     margin-left: 0; */
+/*     margin-right: 0; */
+/*     font-weight: bold; */
+/* } */
+#table-of-contents ul ul {
+    margin: 0 0 0 2em; /* Add some left margin for inner lists */
+}
+#table-of-contents a{
+    position: relative;
+    display: block;
+    padding: .4em .4em .4em .8em;
+    *padding: .4em;
+    color: #444;
+    text-decoration: none;
+    transition: all .3s ease-out;   
+}
+#table-of-contents a:hover{
+    background: #eee;
+}   
+#table-of-contents a:after{
+    position: absolute; 
+    content: '';
+    border: .5em solid transparent;
+    left: -1em;
+    top: 50%;
+    margin-top: -.5em;
+    transition: all .3s ease-out;               
+}
+#table-of-contents a:hover:after{
+    left: -.5em;
+    border-left-color: #fa8072;             
+}
+/* --------------------------- */
+/* Org mode outline formatting */
+/* --------------------------- */
+/* .outline-2:hover { */
+/*     background-color: #e8edff; */
+/* } */
+
+/* -------------------- */
+/* timestamp formatting */
+/* -------------------- */
+.timestamp, .timestamp-kwd {                       
+    font-size: medium;
+}
