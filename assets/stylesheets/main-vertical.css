@@ -31,39 +31,33 @@ tbody tr:hover td {
 /* Org mode TOC */
 /* ------------ */
 body {
-    margin: 5em auto; 
+    margin: auto; 
     font: small Lucida Sans Unicode, Lucida Grande, Sans-Serif;
 }
-#table-of-contents, .outline-2 {
-    border-top: dotted thin;    
-    border-bottom: dotted thin;
+#table-of-contents {
+    width: 10em;
+    padding: 0 0 0 1em;
+    border: dotted thin;
     overflow-x: auto;
     overflow-y: scroll;
     position: fixed;
-    height: 90%;
+    height: 50%;
+    left: 1em;
 }
-#table-of-contents {
-    padding: 0 0 0 1em; 
-    width: 10em;
-    border: dotted thin;
-}
-.outline-2 {
-    left: 11em;
-}
-.outline-2 h2, .title {
+.title {
     display: none;
 }
-.outline-3 {
-    margin: 1em 0;
+.outline-2 {
+    margin: 1em 0 1em 13em;
     padding: 0 1em;
 }
-.outline-3 h3 {
+.outline-2 h2 {
     font-size: x-large;
     text-align: center;
 }
-.outline-text-3, .outline-4 p {
+.outline-text-2, .outline-3 p {
     margin: 0 0 1em 0;
-    border-style: dotted none dotted none;
+    border-style: none none dotted none;
     border-width: thin;
 }
 #table-of-contents ul {

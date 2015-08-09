@@ -1,22 +1,30 @@
 /* ------------------- */
-/* basic HTML elements */
+/* Basic HTML elements */
 /* ------------------- */
+body {                                    
+    margin: 5em auto;
+    width: 90%; 
+    font: small Lucida Sans Unicode, Lucida Grande, Sans-Serif;
+    background: #eee;
+}
 a {
     text-decoration: none;
-    color: #999;
+    color: #000;
 }
 a:hover {
     text-decoration: underline;
+    color: #999;
 }
 table, img {
-    width: 35em;
+    margin: 1em;
 }
 img {
-    border-style: solid;
-    border-width: thin;
+    border: solid thin;
+    width: 95%;
 }
 table, thead, tbody {
-    border: thin solid
+    font-family: Lucida Sans Unicode, Lucida Grande, Sans-Serif;
+    border: thin solid; 
 }
 th { 
     background: #aaa;
@@ -25,59 +33,29 @@ th.left{
     text-align: left;
 }
 tbody tr:hover td {
-    background: #ccc
+    background: #ccc;
 }
 /* ------------ */
 /* Org mode TOC */
 /* ------------ */
-body {
-    margin: 5em auto; 
-    font: small Lucida Sans Unicode, Lucida Grande, Sans-Serif;
-}
-#table-of-contents, .outline-2 {
-    border-top: dotted thin;    
-    border-bottom: dotted thin;
+#table-of-contents {
+    width: 18.5em;
+    padding: 0 0 0 1em;
     overflow-x: auto;
     overflow-y: scroll;
     position: fixed;
-    height: 90%;
-}
-#table-of-contents {
-    padding: 0 0 0 1em; 
-    width: 10em;
-    border: dotted thin;
-}
-.outline-2 {
-    left: 11em;
-}
-.outline-2 h2, .title {
-    display: none;
-}
-.outline-3 {
-    margin: 1em 0;
-    padding: 0 1em;
-}
-.outline-3 h3 {
-    font-size: x-large;
-    text-align: center;
-}
-.outline-text-3, .outline-4 p {
-    margin: 0 0 1em 0;
-    border-style: dotted none dotted none;
-    border-width: thin;
+    height: 70%;
+    clear: both;
 }
 #table-of-contents ul {
-    list-style: none; /* Remove default numbering */
+    list-style: none;
     font-weight: bold;
     padding: 0;
     margin-bottom: 4em;
     text-shadow: 0 1px 0 rgba(255,255,255,.5);
 }
-#table-of-contents h2 {
-    display: none;
-}
 #table-of-contents ul ul {
-    margin: 0 0 0 2em; 
+    margin: 0 0 0 2em;
 }
 #table-of-contents a{
     position: relative;
@@ -88,9 +66,9 @@ body {
     text-decoration: none;
     transition: all .3s ease-out;   
 }
-/* #table-of-contents a:hover{ */
-/*     background: #eee; */
-/* } */   
+#table-of-contents a:hover{
+    background: #eee;
+}   
 #table-of-contents a:after{
     position: absolute; 
     content: '';
@@ -107,13 +85,42 @@ body {
 /* --------------------------- */
 /* Org mode outline formatting */
 /* --------------------------- */
-/* .outline-2:hover { */
-/*     background-color: #e8edff; */
-/* } */
-
-/* -------------------- */
-/* timestamp formatting */
-/* -------------------- */
-.timestamp, .timestamp-kwd {                       
-    font-size: medium;
+.outline-2, #footnotes {                               
+    margin: 0 2em .5em .5em; 
+    padding: .5em .5em 0 .5em;
+    width: 50em;
+    position: relative;
+    left: 15em;
+    overflow: auto;
+    clear: both;
+}
+.outline-3 {                
+    margin: .5em 0;
+    padding: .5em;  
+    border: solid thin;
+}
+.outline-2 h2, .outline-3 h3 {
+    text-align: center;
+    background: #ccc;
+}
+.outline-2 h2 {
+    padding: 1em 0;
+}
+.outline-3 h3 {
+    padding: .5em 0;
+}
+.outline-text-3, .outline-4 p {
+    margin: 0 0 1em 0;
+}
+h2.footnotes {
+    font-size: small;
+}
+#footnotes p {
+    display: inline;
+}
+/* ---------- */
+/* Hide stuff */
+/* ---------- */
+.title, span.todo.TODO, span.todo.PROGRESS, #table-of-contents h2 {
+    display: none;
 }
