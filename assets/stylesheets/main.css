@@ -39,7 +39,7 @@ tbody tr:hover td {
 /* Org mode TOC */
 /* ------------ */
 #table-of-contents {
-    width: 18.5em;
+    width: 15em;
     padding: 0 0 0 1em;
     overflow-x: auto;
     overflow-y: scroll;
