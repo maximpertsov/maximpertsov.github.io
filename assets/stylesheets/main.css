@@ -47,6 +47,11 @@ tbody tr:hover td {
     height: 70%;
     clear: both;
 }
+@media all and (max-width: 720px) {
+    #table-of-contents {
+        display: none;
+    }
+}
 #table-of-contents ul {
     list-style: none;
     font-weight: bold;
@@ -93,6 +98,12 @@ tbody tr:hover td {
     left: 15em;
     overflow: auto;
     clear: both;
+}
+@media all and (max-width: 720px) {
+    .outline-2, #footnotes {
+        left: 1em;
+	width: 90%; ;
+    }
 }
 .outline-3 {                
     margin: .5em 0;
