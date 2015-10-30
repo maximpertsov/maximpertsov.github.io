@@ -113,15 +113,15 @@ tbody tr:hover td
 {
     .outline-2
     {
-                left:20em;
+        left:20em;
     }
 }
 @media (max-width:720px)
 {
     .outline-2
     {
-                left:0;
-                width:100%;
+        left:0;
+        width:100%;
     }
 }
 #org-info-js-window
@@ -151,17 +151,34 @@ tbody tr:hover td
     background:#ccc;
     padding:.5em 0;
 }
+.outline-text-2 p
+{
+    margin-left: 1.3em;
+}
 .outline-3
 {
-    margin:4em 0;
+    margin:4em 1.3em;
 }
 .outline-3 h3
 {
     border-bottom:solid thin #aaa;
 }
-.outline-4 h4, .outline-4 p
+.outline-4
 {
-    margin-left:1em;
+    margin: .5em 0;
+    border: solid thin #aaa;
+}
+.outline-4 h4
+{
+    text-align:center;
+}
+/* .outline-4 h4, .outline-4 p */
+/* { */
+/*     margin-left:0em; */
+/* }  */
+.outline-4
+{
+    padding-left:1em;
 }
 .title,span.todo.TODO,span.todo.PROGRESS,.export
 {
