@@ -1,11 +1,13 @@
 module Main exposing (main)
 
+-- import Html.Styled.Events as Ev
+
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Css exposing (..)
 import Html.Styled as H
 import Html.Styled.Attributes as At
-import Html.Styled.Events as Ev
+import Page.SinOfMana
 import Url
 import Url.Builder as B
 import Url.Parser as P exposing ((</>))
@@ -138,7 +140,7 @@ viewBody model =
             viewHome
 
         Just SinsOfMana ->
-            viewNotFound
+            Page.SinOfMana.view
 
         Nothing ->
             viewNotFound
