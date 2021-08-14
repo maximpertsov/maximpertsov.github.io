@@ -1,14 +1,13 @@
 module Main exposing (main)
 
--- import Html.Styled.Attributes as At
--- import Html.Styled.Events as Ev
--- import Url.Builder as B
-
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Css exposing (..)
-import Html.Styled as H exposing (Html)
+import Html.Styled as H
+import Html.Styled.Attributes as At
+import Html.Styled.Events as Ev
 import Url
+import Url.Builder as B
 import Url.Parser as P exposing ((</>))
 
 
@@ -44,14 +43,14 @@ type alias Model =
 
 type Route
     = Home
+    | SinsOfMana
 
 
 router : P.Parser (Route -> a) a
 router =
     P.oneOf
         [ P.map Home <| P.top
-
-        -- , P.map Round <| P.top </> P.string
+        , P.map SinsOfMana <| P.top </> P.s "sin-of-mana"
         ]
 
 
@@ -132,11 +131,42 @@ view model =
     }
 
 
-viewBody : Model -> Html Msg
+viewBody : Model -> H.Html Msg
 viewBody model =
     case model.route of
         Just Home ->
-            H.div [] [ H.text "HI" ]
+            viewHome
+
+        Just SinsOfMana ->
+            viewNotFound
 
         Nothing ->
-            H.div [] [ H.text "???" ]
+            viewNotFound
+
+
+viewHome : H.Html Msg
+viewHome =
+    H.div []
+        [ H.div
+            []
+            [ H.a
+                [ At.href <| B.absolute [ "sin-of-mana" ] [] ]
+                [ H.text "Sin of Mana" ]
+            ]
+        ]
+
+
+viewNotFound : H.Html Msg
+viewNotFound =
+    H.div
+        []
+        [ H.div
+            []
+            [ H.text "Not found" ]
+        , H.div
+            []
+            [ H.a
+                [ At.href <| B.absolute [] [] ]
+                [ H.text "Return home" ]
+            ]
+        ]
