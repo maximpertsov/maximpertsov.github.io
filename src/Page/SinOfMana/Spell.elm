@@ -1,4 +1,4 @@
-module Page.SinOfMana.Spell exposing (viewAll)
+module Page.SinOfMana.Spell exposing (Spell, find, viewAll)
 
 import Css exposing (..)
 import Csv.Decode as CsvD
@@ -40,6 +40,15 @@ view spell =
         [ H.div [] [ H.text spell.name ]
         , H.div [] [ H.text <| String.join "," spell.element ]
         , H.div [] [ H.text <| String.fromInt spell.mpCost ++ "MP" ]
+        , H.div [] [ H.text <| "Cast time: " ++ String.fromInt spell.castTime ]
+        , H.div [] [ H.text <| spell.effect ]
+        , case spell.special of
+            Nothing ->
+                H.div [] []
+
+            Just note ->
+                H.div [] [ H.text <| "*" ++ note ]
+        , H.div [] [ H.text <| String.join "," spell.upgrades ]
         ]
 
 
@@ -51,11 +60,10 @@ type alias Spell =
     { name : String
     , element : List String
     , mpCost : Int
-
-    -- , castTime : Int
-    -- , effect : String
-    -- , special : Maybe String
-    -- , upgrades : List String
+    , castTime : Int
+    , effect : String
+    , special : Maybe String
+    , upgrades : List String
     }
 
 
@@ -69,6 +77,24 @@ all =
             (String.trim raw)
 
 
+find : String -> Maybe Spell
+find name =
+    all
+        |> Maybe.andThen
+            (\spells ->
+                spells
+                    |> List.filter
+                        (\spell ->
+                            let
+                                toKey =
+                                    String.toLower << String.trim
+                            in
+                            toKey spell.name == toKey name
+                        )
+                    |> List.head
+            )
+
+
 
 -- DECODE
 
@@ -78,12 +104,16 @@ decodeSpells =
     CsvD.into
         Spell
         |> CsvD.pipeline (CsvD.field "Spell" CsvD.string)
-        |> CsvD.pipeline (CsvD.field "Element" decodeElement)
+        |> CsvD.pipeline (CsvD.field "Element" decodeCommaSeparatedStrings)
         |> CsvD.pipeline (CsvD.field "MP Cost" CsvD.int)
+        |> CsvD.pipeline (CsvD.field "Cast Time" CsvD.int)
+        |> CsvD.pipeline (CsvD.field "Effect" CsvD.string)
+        |> CsvD.pipeline (CsvD.field "Special" <| CsvD.blank CsvD.string)
+        |> CsvD.pipeline (CsvD.field "Possible Upgrades" decodeCommaSeparatedStrings)
 
 
-decodeElement : CsvD.Decoder (List String)
-decodeElement =
+decodeCommaSeparatedStrings : CsvD.Decoder (List String)
+decodeCommaSeparatedStrings =
     CsvD.map
         (\value ->
             value
