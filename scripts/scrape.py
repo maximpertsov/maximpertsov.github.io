@@ -9,6 +9,7 @@ def run(path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Parse Sin of Mana data")
+    parser.add_argument("type", choices=["spells"], help="which section to parse")
     parser.add_argument("filepath", type=str, help="data filepath")
 
     args = parser.parse_args()
