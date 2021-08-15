@@ -51,21 +51,22 @@ viewClass (Class class) =
               , H.div [] [ H.text class.maxStats ]
               , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) class.notes
               ]
-
-            -- TODO: filter out empty lists
-            , [ viewSkills Nothing <| Class class
-              , viewSkills (Just STR) <| Class class
-              , viewSkills (Just AGL) <| Class class
-              , viewSkills (Just VIT) <| Class class
-              , viewSkills (Just INT) <| Class class
-              , viewSkills (Just PIE) <| Class class
-              , viewSkills (Just LUK) <| Class class
-              ]
+            , List.filter
+                (not << List.isEmpty)
+                [ skillsByStat Nothing <| classSkills <| Class class
+                , skillsByStat (Just STR) <| classSkills <| Class class
+                , skillsByStat (Just AGL) <| classSkills <| Class class
+                , skillsByStat (Just VIT) <| classSkills <| Class class
+                , skillsByStat (Just INT) <| classSkills <| Class class
+                , skillsByStat (Just PIE) <| classSkills <| Class class
+                , skillsByStat (Just LUK) <| classSkills <| Class class
+                ]
+                |> List.map viewSkills
             ]
 
 
-viewSkills : Maybe Stat -> Class -> H.Html msg
-viewSkills maybeStat class =
+viewSkills : List Skill -> H.Html msg
+viewSkills skills_ =
     H.div
         [ At.css
             [ margin (px 5)
@@ -76,8 +77,7 @@ viewSkills maybeStat class =
             , flexDirection row
             ]
         ]
-        (classSkills class
-            |> skillsByStat maybeStat
+        (skills_
             |> List.map viewSkill
             |> List.intersperse
                 (H.div
@@ -485,19 +485,9 @@ type Stat
 
 raw =
     """
-spells noted with * are one/all-target
-spells noted with # are all-target
-spells noted with ^ can only be cast on self
-
 The listed order of spells may not reflect the exact order in which spells are learned.
 A character may only know 10 spells at once; final classes offer 12 spells and certain items may teach new spells as well.
 Once the 10 spell limit is reached it is no longer possible to learn new spells or spell upgrades by level up.
-
-
-Duran
--can equip shields to draw aggro
-
-
 
 Kevin
 -dual attacks
