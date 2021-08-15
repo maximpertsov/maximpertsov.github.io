@@ -62,13 +62,11 @@ view =
     H.div
         []
         [ viewCharacters
-        , case Page.SinOfMana.Spell.all of
-            Err error ->
-                H.div [] [ H.text <| Debug.toString error ]
-
-            -- H.div [] [ H.text <| "Problem loading spells" ]
-            Ok spells ->
-                H.div [] <| List.map (\spell -> H.text spell.name) spells
+        , H.div
+            []
+            [ H.h2 [] [ H.text "Spells" ]
+            , Page.SinOfMana.Spell.viewAll
+            ]
         ]
 
 

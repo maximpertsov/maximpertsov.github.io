@@ -1,15 +1,46 @@
-module Page.SinOfMana.Spell exposing (all, raw)
+module Page.SinOfMana.Spell exposing (viewAll)
 
+import Css exposing (..)
 import Csv.Decode as CsvD
+import Html.Styled as H
+import Html.Styled.Attributes as At
 
 
-all : Result CsvD.Error (List Spell1)
-all =
-    CsvD.decodeCustom
-        { fieldSeparator = '\t' }
-        CsvD.FieldNamesFromFirstRow
-        decodeSpells
-        (String.trim raw)
+
+-- VIEW
+
+
+viewAll : H.Html msg
+viewAll =
+    case all of
+        Nothing ->
+            H.div [] [ H.text "Problem loading spells" ]
+
+        Just spells ->
+            H.div
+                [ At.css
+                    [ property "display" "grid"
+                    , property "grid-template-columns" "repeat(auto-fit, minmax(250px, 1fr))"
+                    , property "justify-items" "center"
+                    ]
+                ]
+            <|
+                List.map view spells
+
+
+view : Spell -> H.Html msg
+view spell =
+    H.div
+        [ At.css
+            [ border3 (px 1) solid (hex "#000")
+            , width (px 250)
+            , margin2 (px 5) (px 0)
+            ]
+        ]
+        [ H.div [] [ H.text spell.name ]
+        , H.div [] [ H.text <| String.join "," spell.element ]
+        , H.div [] [ H.text <| String.fromInt spell.mpCost ++ "MP" ]
+        ]
 
 
 
@@ -20,27 +51,46 @@ type alias Spell =
     { name : String
     , element : List String
     , mpCost : Int
-    , castTime : Int
-    , effect : String
-    , special : Maybe String
-    , upgrades : List String
+
+    -- , castTime : Int
+    -- , effect : String
+    -- , special : Maybe String
+    -- , upgrades : List String
     }
 
 
-type alias Spell1 =
-    { name : String
-    }
+all : Maybe (List Spell)
+all =
+    Result.toMaybe <|
+        CsvD.decodeCustom
+            { fieldSeparator = '\t' }
+            CsvD.FieldNamesFromFirstRow
+            decodeSpells
+            (String.trim raw)
 
 
 
 -- DECODE
 
 
-decodeSpells : CsvD.Decoder Spell1
+decodeSpells : CsvD.Decoder Spell
 decodeSpells =
     CsvD.into
-        Spell1
+        Spell
         |> CsvD.pipeline (CsvD.field "Spell" CsvD.string)
+        |> CsvD.pipeline (CsvD.field "Element" decodeElement)
+        |> CsvD.pipeline (CsvD.field "MP Cost" CsvD.int)
+
+
+decodeElement : CsvD.Decoder (List String)
+decodeElement =
+    CsvD.map
+        (\value ->
+            value
+                |> String.split ","
+                |> List.map String.trim
+        )
+        CsvD.string
 
 
 raw =
