@@ -1,6 +1,107 @@
-module Page.SinOfMana.Character exposing (raw)
+module Page.SinOfMana.Character exposing (Character, viewAll)
 
+import Css exposing (..)
+import Html.Styled as H
+import Html.Styled.Attributes as At
 import Page.SinOfMana.Spell as Spell exposing (Spell)
+
+
+
+-- VIEW
+
+
+viewAll : H.Html msg
+viewAll =
+    H.div
+        [ At.css
+            [ property "display" "grid"
+            -- , property "grid-template-columns" "repeat(auto-fit, minmax(300px, 1fr))"
+            , property "justify-items" "center"
+            ]
+        ]
+    <|
+        List.map view characters
+
+
+view : Character -> H.Html msg
+view character =
+    H.div
+        [ At.css
+            [ border3 (px 1) solid (hex "#000")
+            , width (pct 90)
+            , margin2 (px 5) (px 0)
+            , padding2 (px 0) (px 10)
+            ]
+        ]
+        [ H.div [] [ H.h3 [] [ H.text character.name ] ]
+        , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) character.notes
+        , H.div [] <| List.map viewClass <| characterClasses character
+        ]
+
+
+viewClass : Class -> H.Html msg
+viewClass (Class class) =
+    H.div
+        []
+        [ H.div [] [ H.h4 [] [ H.text class.name ] ]
+        , H.div [] [ H.text class.maxStats ]
+        , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) class.notes
+        , viewSkills <| Class class
+        ]
+
+
+viewSkills : Class -> H.Html msg
+viewSkills class =
+    H.div
+        [ At.css
+            [ border3 (px 1) dashed (hex "#cbcbcb")
+            , margin (px 5)
+            ]
+        ]
+    <|
+        List.map viewSkill <|
+            classSkills class
+
+
+viewSkill : Skill -> H.Html msg
+viewSkill skill =
+    H.div
+        []
+        [ H.div [] [ H.text skill.spell.name ]
+        ]
+
+
+
+-- QUERIES
+
+
+characterClasses : Character -> List Class
+characterClasses character =
+    List.filter
+        (\class ->
+            case class of
+                Class class_ ->
+                    class_.character == character
+        )
+        classes
+
+
+classSkills : Class -> List Skill
+classSkills class =
+    List.filterMap
+        (\skill ->
+            case skill of
+                Err _ ->
+                    Nothing
+
+                Ok skill_ ->
+                    if skill_.class == class then
+                        Just skill_
+
+                    else
+                        Nothing
+        )
+        skills
 
 
 
@@ -62,6 +163,17 @@ lise =
 -- Classes
 
 
+classes =
+    [ fighter
+    , knight
+    , gladiator
+    , paladin
+    , lord
+    , swordmaster
+    , duelist
+    ]
+
+
 fighter : Class
 fighter =
     Class
@@ -70,6 +182,7 @@ fighter =
         , maxStats = "12/11/10/8/8/8"
         , item = Nothing
         , predecessor = Nothing
+        , notes = []
         }
 
 
@@ -81,6 +194,7 @@ knight =
         , maxStats = "17/15/17/13/14/14"
         , item = Nothing
         , predecessor = Just fighter
+        , notes = []
         }
 
 
@@ -92,6 +206,7 @@ gladiator =
         , maxStats = "18/16/17/14/13/13"
         , item = Nothing
         , predecessor = Just fighter
+        , notes = []
         }
 
 
@@ -103,6 +218,43 @@ paladin =
         , maxStats = "31/29/32/28/29/29"
         , item = Just "Paladin's Proof"
         , predecessor = Just knight
+        , notes = []
+        }
+
+
+lord : Class
+lord =
+    Class
+        { name = "Lord"
+        , character = duran
+        , maxStats = "32/28/31/29/28/30"
+        , item = Just "Lord's Proof"
+        , predecessor = Just knight
+        , notes = []
+        }
+
+
+swordmaster : Class
+swordmaster =
+    Class
+        { name = "Lord"
+        , character = duran
+        , maxStats = "32/29/31/29/28/29"
+        , item = Just "Master's Proof"
+        , predecessor = Just gladiator
+        , notes = []
+        }
+
+
+duelist : Class
+duelist =
+    Class
+        { name = "Duelist"
+        , character = duran
+        , maxStats = "33/30/30/30/27/28"
+        , item = Just "Duelist's Proof"
+        , predecessor = Just gladiator
+        , notes = [ "Lv3 tech has increased base damage" ]
         }
 
 
@@ -143,10 +295,56 @@ skills =
     , toSkill paladin "Exorcise" All (StatLevel 24 PIE) Nothing
     , toSkill paladin "Magic Shield" One (StatLevel 18 VIT) Nothing
     , toSkill paladin "Saint Saber" One (StatLevel 21 VIT) Nothing
-    , toSkill paladin "Protect Up*" One (StatLevel 24 VIT) Nothing
+    , toSkill paladin "Protect Up" OneOrAll (StatLevel 24 VIT) Nothing
     , toSkill paladin "Tinkle Rain" One (StatLevel 16 AGL) Nothing
     , toSkill paladin "Ice Smash" One (StatLevel 19 AGL) Nothing
     , toSkill paladin "Speed Up" OneOrAll (StatLevel 22 AGL) Nothing
+    , toSkill lord "Heal Light" OneOrAll (StatLevel 15 PIE) Nothing
+    , toSkill lord "Tinkle Rain" OneOrAll (StatLevel 18 PIE) Nothing
+    , toSkill lord "Speed Down" OneOrAll (StatLevel 22 PIE) Nothing
+    , toSkill lord "Speed Up" OneOrAll (StatLevel 17 AGL) Nothing
+    , toSkill lord "Life Booster" One (StatLevel 20 AGL) Nothing
+    , toSkill lord "Power Up" One (StatLevel 23 AGL) Nothing
+    , toSkill lord "Ice Saber" One (StatLevel 15 INT) Nothing
+    , toSkill lord "Protect Up" OneOrAll (StatLevel 19 INT) Nothing
+    , toSkill lord "Energy Ball" One (StatLevel 22 INT) Nothing
+    , toSkill lord "Arrows" One (StatLevel 16 LUK) Nothing
+    , toSkill lord "Diamond Saber" One (StatLevel 20 LUK) Nothing
+    , toSkill lord "Analyse" One (StatLevel 23 LUK) Nothing
+    , toSkill swordmaster "Ice Saber" OneOrAll (StatLevel 15 LUK) Nothing
+    , toSkill swordmaster "Dark Saber" OneOrAll (StatLevel 18 LUK) Nothing
+    , toSkill swordmaster "Energy Ball" One (StatLevel 22 LUK) Nothing
+    , toSkill swordmaster "Thunder Saber" OneOrAll (StatLevel 16 INT) Nothing
+    , toSkill swordmaster "Analyse" One (StatLevel 19 INT) Nothing
+    , toSkill swordmaster "Saint Saber" One (StatLevel 24 INT) Nothing
+    , toSkill swordmaster "Leaf Saber" One (StatLevel 20 STR) Nothing
+    , toSkill swordmaster "Diamond Saber" OneOrAll (StatLevel 23 STR) Nothing
+    , toSkill swordmaster "Power Up" Self (StatLevel 26 STR) Nothing
+    , toSkill swordmaster "Speed Up" Self (StatLevel 18 AGL) Nothing
+    , toSkill swordmaster "Flame Saber" OneOrAll (StatLevel 21 AGL) Nothing
+    , toSkill swordmaster "Moon Saber" One (StatLevel 25 AGL) Nothing
+    , toSkill duelist "Diamond Saber" One Automatic Nothing
+    , toSkill duelist "Thunder Saber" One Automatic Nothing
+    , toSkill duelist "Dark Saber" One Automatic Nothing
+    , toSkill duelist "Ice Saber" One (StatLevel 20 STR) Nothing
+    , toSkill duelist "Mind Down" One (StatLevel 22 STR) Nothing
+    , toSkill duelist "Anti-Magic" One (StatLevel 25 STR) Nothing
+    , toSkill duelist "Life Booster" One (StatLevel 18 VIT) Nothing
+    , toSkill duelist "Leaf Saber" One (StatLevel 20 VIT) Nothing
+    , toSkill duelist "Protect Down" One (StatLevel 23 VIT) Nothing
+    , toSkill duelist "Flame Saber" One (StatLevel 16 INT) Nothing
+    , toSkill duelist "Transshape" Self (StatLevel 19 INT) Nothing
+    , toSkill duelist "Aura Wave" One (StatLevel 22 INT) Nothing
+    ]
+
+
+capstones =
+    [ Capstone duran STR "enemies spawn with -15 p.def&m.def"
+    , Capstone duran AGL "sword magic +atk gives 20% instead of 10% (party)"
+    , Capstone duran VIT "MP regen tick also restores 15 HP"
+    , Capstone duran INT "gain 7 p.def&m.def and +20 HP per cursed acc. equipped"
+    , Capstone duran PIE "10 maxMP"
+    , Capstone duran LUK "increases crit rate resistance of party by 15%"
     ]
 
 
@@ -167,6 +365,7 @@ type Class
         , maxStats : String
         , item : Maybe String
         , predecessor : Maybe Class
+        , notes : List String
         }
 
 
@@ -204,7 +403,7 @@ type Stat
     | VIT
     | INT
     | PIE
-    | LUCK
+    | LUK
 
 
 
@@ -224,40 +423,6 @@ Once the 10 spell limit is reached it is no longer possible to learn new spells 
 
 Duran
 -can equip shields to draw aggro
-
-
-Lord:\t\t32/28/31/29/28/30
-class change item: Lord's Proof
-spell list:
-Heal Light* (15 PIE), Tinkle Rain* (18 PIE), Speed Down* (22 PIE)
-Speed Up* (17 AGL), Life Booster (20 AGL), Power Up (23 AGL)
-Ice Saber (15 INT), Protect Up* (19 INT), Energy Ball (22 INT)
-Arrows (16 LUCK), Diamond Saber (20 LUCK), Analyse (23 LUCK)
-
-Swordmaster:\t32/29/31/29/28/29
-class change item: Master's Proof
-spell list:
-Ice Saber* (15 LUCK), Dark Saber* (18 LUCK), Energy Ball (22 LUCK)
-Thunder Saber* (16 INT), Analyse (19 INT), Saint Saber (24 INT)
-Leaf Saber (20 STR), Diamond Saber* (23 STR), Power Up^ (26 STR)
-Speed Up^ (18 AGL), Flame Saber* (21 AGL), Moon Saber (25 AGL)
-
-Duelist:\t33/30/30/30/27/28
-class change item: Duelist's Proof
-Lv3 tech has increased base damage
-spell list:
-Diamond Saber, Thunder Saber, Dark Saber
-Ice Saber (20 STR), Mind Down (22 STR), Anti-Magic (25 STR)
-Life Booster (18 VIT), Leaf Saber (20 VIT), Protect Down (23 VIT)
-Flame Saber (16 INT), Transshape^ (19 INT), Aura Wave (22 INT)
-
-capstones
-STR - enemies spawn with -15 p.def&m.def
-AGL - sword magic +atk gives 20% instead of 10% (party)
-VIT - MP regen tick also restores 15 HP
-INT - gain 7 p.def&m.def and +20 HP per cursed acc. equipped
-PIE - 10 maxMP
-LUK - increases crit rate resistance of party by 15%
 
 
 
