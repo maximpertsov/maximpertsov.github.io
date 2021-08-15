@@ -87,7 +87,9 @@ find name =
                         (\spell ->
                             let
                                 toKey =
-                                    String.toLower << String.trim
+                                    String.replace "-" ""
+                                        << String.toLower
+                                        << String.trim
                             in
                             toKey spell.name == toKey name
                         )
@@ -190,7 +192,7 @@ Freya\tNone\t12\t150\tLv2.5 magic damage based on INT + chibikko\t\t
 Marduke  \tNone\t12\t150\tLv2.5 magic damage based on INT + silence\t\t
 Jormungand\tNone\t12\t150\tLv2.5 magic damage based on INT + poison\t\t
 Lamian Naga\tNone\t12\t150\tLv2.5 magic damage based on INT + sleep\t\t
-Arrow\tPhysical\t8\t45\tLv1.5 physical damage based on LUCK\t\t
+Arrows\tPhysical\t8\t45\tLv1.5 physical damage based on LUCK\t\t
 Axe Bomber\tPhysical\t10\t63\tLv2 physical damage based on LUCK\t\t
 Spike\tEarth\t8\t49\tLv1 physical damage based on LUCK\t\t
 Rock Fall\tEarth\t11\t61\tLv2 physical damage based on LUCK\t\t
@@ -210,6 +212,12 @@ Flame Breath\tFire\t11\t58\tLv2 physical damage based on INT\t\t
 Blow Needles\tShadow\t10\t81\tLv1.5 physical damage based on LUCK + silence\t\tcurse
 Deadly Weapon\tNone\t14\t118\tLv2 physical damage based on LUCK + max HP down\t\t
 Black Rain\tShadow\t13\t114\tLv1.5 physical damage based on AGL\t\tcurse
-Analyze\tNone\t9\t23\treduce resistance to critical hits (rate & damage)\t\tauto-debuff
+Analyse\tNone\t9\t23\treduce resistance to critical hits (rate & damage)\t\tauto-debuff
 Regeneration\tNone\t8\t110\trestore HP based on PIE (Lv1) and add HP regeneration effect, hurts undead\t\tauto-buff
 """
+
+
+
+-- Updates:
+-- Arrow -> Arrows
+-- Analyze -> Analyse

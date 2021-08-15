@@ -1,6 +1,7 @@
 module Page.SinOfMana.Character exposing (Character, viewAll)
 
 import Css exposing (..)
+import Debug
 import Html.Styled as H
 import Html.Styled.Attributes as At
 import Page.SinOfMana.Spell as Spell exposing (Spell)
@@ -15,6 +16,7 @@ viewAll =
     H.div
         [ At.css
             [ property "display" "grid"
+
             -- , property "grid-template-columns" "repeat(auto-fit, minmax(300px, 1fr))"
             , property "justify-items" "center"
             ]
@@ -43,36 +45,107 @@ viewClass : Class -> H.Html msg
 viewClass (Class class) =
     H.div
         []
-        [ H.div [] [ H.h4 [] [ H.text class.name ] ]
-        , H.div [] [ H.text class.maxStats ]
-        , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) class.notes
-        , viewSkills <| Class class
-        ]
+    <|
+        List.concat
+            [ [ H.div [] [ H.h4 [] [ H.text class.name ] ]
+              , H.div [] [ H.text class.maxStats ]
+              , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) class.notes
+              ]
+
+            -- TODO: filter out empty lists
+            , [ viewSkills Nothing <| Class class
+              , viewSkills (Just STR) <| Class class
+              , viewSkills (Just AGL) <| Class class
+              , viewSkills (Just VIT) <| Class class
+              , viewSkills (Just INT) <| Class class
+              , viewSkills (Just PIE) <| Class class
+              , viewSkills (Just LUK) <| Class class
+              ]
+            ]
 
 
-viewSkills : Class -> H.Html msg
-viewSkills class =
+viewSkills : Maybe Stat -> Class -> H.Html msg
+viewSkills maybeStat class =
     H.div
         [ At.css
-            [ border3 (px 1) dashed (hex "#cbcbcb")
-            , margin (px 5)
+            [ margin (px 5)
+
+            -- , property "display" "grid"
+            -- , property "grid-template-columns" "repeat(4, 200px)"
+            , displayFlex
+            , flexDirection row
             ]
         ]
-    <|
-        List.map viewSkill <|
-            classSkills class
+        (classSkills class
+            |> skillsByStat maybeStat
+            |> List.map viewSkill
+            |> List.intersperse
+                (H.div
+                    [ At.css
+                        [ margin2 (px 0) (px 10) ]
+                    ]
+                    [ H.text "→" ]
+                )
+        )
 
 
 viewSkill : Skill -> H.Html msg
 viewSkill skill =
+    let
+        targetSuffix =
+            case skill.target of
+                One ->
+                    ""
+
+                OneOrAll ->
+                    "*"
+
+                All ->
+                    "#"
+
+                Self ->
+                    "^"
+
+        learnedAt =
+            case skill.learnedAt of
+                Automatic ->
+                    ""
+
+                LevelStat level stat ->
+                    String.concat
+                        [ " ("
+                        , String.fromInt level
+                        , " "
+                        , Debug.toString stat
+                        , ")"
+                        ]
+    in
     H.div
         []
-        [ H.div [] [ H.text skill.spell.name ]
-        ]
+        [ H.text <| skill.spell.name ++ targetSuffix ++ learnedAt ]
 
 
 
 -- QUERIES
+
+
+skillsByStat : Maybe Stat -> List Skill -> List Skill
+skillsByStat maybeStat skills_ =
+    skills_
+        |> List.filter
+            (\skill ->
+                case maybeStat of
+                    Nothing ->
+                        skill.learnedAt == Automatic
+
+                    Just stat ->
+                        case skill.learnedAt of
+                            Automatic ->
+                                False
+
+                            LevelStat _ stat_ ->
+                                stat == stat_
+            )
 
 
 characterClasses : Character -> List Class
@@ -282,59 +355,59 @@ toSkill class spellName target learnedAt replace =
 
 skills : List (Result String Skill)
 skills =
-    [ toSkill knight "Heal Light" One (StatLevel 9 PIE) Nothing
-    , toSkill knight "Protect Up" One (StatLevel 10 INT) Nothing
-    , toSkill gladiator "Diamond Saber" One (StatLevel 9 INT) Nothing
-    , toSkill gladiator "Thunder Saber" One (StatLevel 11 INT) Nothing
-    , toSkill gladiator "Dark Saber" One (StatLevel 13 INT) Nothing
-    , toSkill paladin "Diamond Missile" One (StatLevel 14 INT) Nothing
-    , toSkill paladin "Sleep Flower" One (StatLevel 17 INT) Nothing
-    , toSkill paladin "Anti-Magic" One (StatLevel 23 INT) Nothing
-    , toSkill paladin "Holy Ball" One (StatLevel 16 PIE) Nothing
-    , toSkill paladin "Heal Light" OneOrAll (StatLevel 20 PIE) Nothing
-    , toSkill paladin "Exorcise" All (StatLevel 24 PIE) Nothing
-    , toSkill paladin "Magic Shield" One (StatLevel 18 VIT) Nothing
-    , toSkill paladin "Saint Saber" One (StatLevel 21 VIT) Nothing
-    , toSkill paladin "Protect Up" OneOrAll (StatLevel 24 VIT) Nothing
-    , toSkill paladin "Tinkle Rain" One (StatLevel 16 AGL) Nothing
-    , toSkill paladin "Ice Smash" One (StatLevel 19 AGL) Nothing
-    , toSkill paladin "Speed Up" OneOrAll (StatLevel 22 AGL) Nothing
-    , toSkill lord "Heal Light" OneOrAll (StatLevel 15 PIE) Nothing
-    , toSkill lord "Tinkle Rain" OneOrAll (StatLevel 18 PIE) Nothing
-    , toSkill lord "Speed Down" OneOrAll (StatLevel 22 PIE) Nothing
-    , toSkill lord "Speed Up" OneOrAll (StatLevel 17 AGL) Nothing
-    , toSkill lord "Life Booster" One (StatLevel 20 AGL) Nothing
-    , toSkill lord "Power Up" One (StatLevel 23 AGL) Nothing
-    , toSkill lord "Ice Saber" One (StatLevel 15 INT) Nothing
-    , toSkill lord "Protect Up" OneOrAll (StatLevel 19 INT) Nothing
-    , toSkill lord "Energy Ball" One (StatLevel 22 INT) Nothing
-    , toSkill lord "Arrows" One (StatLevel 16 LUK) Nothing
-    , toSkill lord "Diamond Saber" One (StatLevel 20 LUK) Nothing
-    , toSkill lord "Analyse" One (StatLevel 23 LUK) Nothing
-    , toSkill swordmaster "Ice Saber" OneOrAll (StatLevel 15 LUK) Nothing
-    , toSkill swordmaster "Dark Saber" OneOrAll (StatLevel 18 LUK) Nothing
-    , toSkill swordmaster "Energy Ball" One (StatLevel 22 LUK) Nothing
-    , toSkill swordmaster "Thunder Saber" OneOrAll (StatLevel 16 INT) Nothing
-    , toSkill swordmaster "Analyse" One (StatLevel 19 INT) Nothing
-    , toSkill swordmaster "Saint Saber" One (StatLevel 24 INT) Nothing
-    , toSkill swordmaster "Leaf Saber" One (StatLevel 20 STR) Nothing
-    , toSkill swordmaster "Diamond Saber" OneOrAll (StatLevel 23 STR) Nothing
-    , toSkill swordmaster "Power Up" Self (StatLevel 26 STR) Nothing
-    , toSkill swordmaster "Speed Up" Self (StatLevel 18 AGL) Nothing
-    , toSkill swordmaster "Flame Saber" OneOrAll (StatLevel 21 AGL) Nothing
-    , toSkill swordmaster "Moon Saber" One (StatLevel 25 AGL) Nothing
+    [ toSkill knight "Heal Light" One (LevelStat 9 PIE) Nothing
+    , toSkill knight "Protect Up" One (LevelStat 10 INT) Nothing
+    , toSkill gladiator "Diamond Saber" One (LevelStat 9 INT) Nothing
+    , toSkill gladiator "Thunder Saber" One (LevelStat 11 INT) Nothing
+    , toSkill gladiator "Dark Saber" One (LevelStat 13 INT) Nothing
+    , toSkill paladin "Diamond Missile" One (LevelStat 14 INT) Nothing
+    , toSkill paladin "Sleep Flower" One (LevelStat 17 INT) Nothing
+    , toSkill paladin "Anti-Magic" One (LevelStat 23 INT) Nothing
+    , toSkill paladin "Holy Ball" One (LevelStat 16 PIE) Nothing
+    , toSkill paladin "Heal Light" OneOrAll (LevelStat 20 PIE) Nothing
+    , toSkill paladin "Exorcise" All (LevelStat 24 PIE) Nothing
+    , toSkill paladin "Magic Shield" One (LevelStat 18 VIT) Nothing
+    , toSkill paladin "Saint Saber" One (LevelStat 21 VIT) Nothing
+    , toSkill paladin "Protect Up" OneOrAll (LevelStat 24 VIT) Nothing
+    , toSkill paladin "Tinkle Rain" One (LevelStat 16 AGL) Nothing
+    , toSkill paladin "Ice Smash" One (LevelStat 19 AGL) Nothing
+    , toSkill paladin "Speed Up" OneOrAll (LevelStat 22 AGL) Nothing
+    , toSkill lord "Heal Light" OneOrAll (LevelStat 15 PIE) Nothing
+    , toSkill lord "Tinkle Rain" OneOrAll (LevelStat 18 PIE) Nothing
+    , toSkill lord "Speed Down" OneOrAll (LevelStat 22 PIE) Nothing
+    , toSkill lord "Speed Up" OneOrAll (LevelStat 17 AGL) Nothing
+    , toSkill lord "Life Booster" One (LevelStat 20 AGL) Nothing
+    , toSkill lord "Power Up" One (LevelStat 23 AGL) Nothing
+    , toSkill lord "Ice Saber" One (LevelStat 15 INT) Nothing
+    , toSkill lord "Protect Up" OneOrAll (LevelStat 19 INT) Nothing
+    , toSkill lord "Energy Ball" One (LevelStat 22 INT) Nothing
+    , toSkill lord "Arrows" One (LevelStat 16 LUK) Nothing
+    , toSkill lord "Diamond Saber" One (LevelStat 20 LUK) Nothing
+    , toSkill lord "Analyse" One (LevelStat 23 LUK) Nothing
+    , toSkill swordmaster "Ice Saber" OneOrAll (LevelStat 15 LUK) Nothing
+    , toSkill swordmaster "Dark Saber" OneOrAll (LevelStat 18 LUK) Nothing
+    , toSkill swordmaster "Energy Ball" One (LevelStat 22 LUK) Nothing
+    , toSkill swordmaster "Thunder Saber" OneOrAll (LevelStat 16 INT) Nothing
+    , toSkill swordmaster "Analyse" One (LevelStat 19 INT) Nothing
+    , toSkill swordmaster "Saint Saber" One (LevelStat 24 INT) Nothing
+    , toSkill swordmaster "Leaf Saber" One (LevelStat 20 STR) Nothing
+    , toSkill swordmaster "Diamond Saber" OneOrAll (LevelStat 23 STR) Nothing
+    , toSkill swordmaster "Power Up" Self (LevelStat 26 STR) Nothing
+    , toSkill swordmaster "Speed Up" Self (LevelStat 18 AGL) Nothing
+    , toSkill swordmaster "Flame Saber" OneOrAll (LevelStat 21 AGL) Nothing
+    , toSkill swordmaster "Moon Saber" One (LevelStat 25 AGL) Nothing
     , toSkill duelist "Diamond Saber" One Automatic Nothing
     , toSkill duelist "Thunder Saber" One Automatic Nothing
     , toSkill duelist "Dark Saber" One Automatic Nothing
-    , toSkill duelist "Ice Saber" One (StatLevel 20 STR) Nothing
-    , toSkill duelist "Mind Down" One (StatLevel 22 STR) Nothing
-    , toSkill duelist "Anti-Magic" One (StatLevel 25 STR) Nothing
-    , toSkill duelist "Life Booster" One (StatLevel 18 VIT) Nothing
-    , toSkill duelist "Leaf Saber" One (StatLevel 20 VIT) Nothing
-    , toSkill duelist "Protect Down" One (StatLevel 23 VIT) Nothing
-    , toSkill duelist "Flame Saber" One (StatLevel 16 INT) Nothing
-    , toSkill duelist "Transshape" Self (StatLevel 19 INT) Nothing
-    , toSkill duelist "Aura Wave" One (StatLevel 22 INT) Nothing
+    , toSkill duelist "Ice Saber" One (LevelStat 20 STR) Nothing
+    , toSkill duelist "Mind Down" One (LevelStat 22 STR) Nothing
+    , toSkill duelist "Anti-Magic" One (LevelStat 25 STR) Nothing
+    , toSkill duelist "Life Booster" One (LevelStat 18 VIT) Nothing
+    , toSkill duelist "Leaf Saber" One (LevelStat 20 VIT) Nothing
+    , toSkill duelist "Protect Down" One (LevelStat 23 VIT) Nothing
+    , toSkill duelist "Flame Saber" One (LevelStat 16 INT) Nothing
+    , toSkill duelist "Transshape" Self (LevelStat 19 INT) Nothing
+    , toSkill duelist "Aura Wave" One (LevelStat 22 INT) Nothing
     ]
 
 
@@ -379,7 +452,7 @@ type alias Skill =
 
 
 type LearnedAt
-    = StatLevel Int Stat
+    = LevelStat Int Stat
     | Automatic
 
 
