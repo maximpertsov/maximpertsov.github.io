@@ -8,125 +8,70 @@ import Page.SinOfMana.Spell as Spell exposing (Spell)
 
 
 
--- VIEW
+-- MODEL
 
 
-viewAll : H.Html msg
-viewAll =
-    H.div
-        [ At.css
-            [ property "display" "grid"
-
-            -- , property "grid-template-columns" "repeat(auto-fit, minmax(300px, 1fr))"
-            , property "justify-items" "center"
-            ]
-        ]
-    <|
-        List.map view characters
+type alias Character =
+    { name : String
+    , notes : List String
+    }
 
 
-view : Character -> H.Html msg
-view character =
-    H.div
-        [ At.css
-            [ border3 (px 1) solid (hex "#000")
-            , width (pct 90)
-            , margin2 (px 5) (px 0)
-            , padding2 (px 0) (px 10)
-            ]
-        ]
-        [ H.div [] [ H.h3 [] [ H.text character.name ] ]
-        , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) character.notes
-        , H.div [] <| List.map viewClass <| characterClasses character
-        ]
+type Class
+    = Class
+        { name : String
+        , character : Character
+        , maxStats : String
+        , item : Maybe String
+        , predecessor : Maybe Class
+        , notes : List String
+        }
 
 
-viewClass : Class -> H.Html msg
-viewClass (Class class) =
-    H.div
-        []
-    <|
-        List.concat
-            [ [ H.div [] [ H.h4 [] [ H.text class.name ] ]
-              , H.div [] [ H.text class.maxStats ]
-              , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) class.notes
-              ]
-            , List.filter
-                (not << List.isEmpty)
-                [ skillsByStat Nothing <| classSkills <| Class class
-                , skillsByStat (Just STR) <| classSkills <| Class class
-                , skillsByStat (Just AGL) <| classSkills <| Class class
-                , skillsByStat (Just VIT) <| classSkills <| Class class
-                , skillsByStat (Just INT) <| classSkills <| Class class
-                , skillsByStat (Just PIE) <| classSkills <| Class class
-                , skillsByStat (Just LUK) <| classSkills <| Class class
-                ]
-                |> List.map viewSkills
-            ]
+type alias Skill =
+    { class : Class
+    , spell : Spell
+    , learnedAt : LearnedAt
+    , target : Target
+    , replace : Maybe Spell
+    }
 
 
-viewSkills : List Skill -> H.Html msg
-viewSkills skills_ =
-    H.div
-        [ At.css
-            [ margin (px 5)
-
-            -- , property "display" "grid"
-            -- , property "grid-template-columns" "repeat(4, 200px)"
-            , displayFlex
-            , flexDirection row
-            ]
-        ]
-        (skills_
-            |> List.map viewSkill
-            |> List.intersperse
-                (H.div
-                    [ At.css
-                        [ margin2 (px 0) (px 10) ]
-                    ]
-                    [ H.text "→" ]
-                )
-        )
+type LearnedAt
+    = LevelStat Int Stat
+    | Automatic
 
 
-viewSkill : Skill -> H.Html msg
-viewSkill skill =
-    let
-        targetSuffix =
-            case skill.target of
-                One ->
-                    ""
+type alias Capstone =
+    { character : Character
+    , stat : Stat
+    , description : String
+    }
 
-                OneOrAll ->
-                    "*"
 
-                All ->
-                    "#"
+type Target
+    = One
+    | OneOrAll
+    | All
+    | Self
 
-                Self ->
-                    "^"
 
-        learnedAt =
-            case skill.learnedAt of
-                Automatic ->
-                    ""
-
-                LevelStat level stat ->
-                    String.concat
-                        [ " ("
-                        , String.fromInt level
-                        , " "
-                        , Debug.toString stat
-                        , ")"
-                        ]
-    in
-    H.div
-        []
-        [ H.text <| skill.spell.name ++ targetSuffix ++ learnedAt ]
+type Stat
+    = STR
+    | AGL
+    | VIT
+    | INT
+    | PIE
+    | LUK
 
 
 
 -- QUERIES
+
+
+capstonesByCharacter : Character -> List Capstone
+capstonesByCharacter character =
+    List.filter ((==) character << .character) capstones
 
 
 skillsByStat : Maybe Stat -> List Skill -> List Skill
@@ -422,61 +367,147 @@ capstones =
 
 
 
--- MODEL
+-- VIEW
 
 
-type alias Character =
-    { name : String
-    , notes : List String
-    }
+viewAll : H.Html msg
+viewAll =
+    H.div
+        [ At.css
+            [ property "display" "grid"
+
+            -- , property "grid-template-columns" "repeat(auto-fit, minmax(300px, 1fr))"
+            , property "justify-items" "center"
+            ]
+        ]
+    <|
+        List.map view characters
 
 
-type Class
-    = Class
-        { name : String
-        , character : Character
-        , maxStats : String
-        , item : Maybe String
-        , predecessor : Maybe Class
-        , notes : List String
-        }
+view : Character -> H.Html msg
+view character =
+    H.div
+        [ At.css
+            [ border3 (px 1) solid (hex "#000")
+            , width (pct 90)
+            , margin2 (px 5) (px 0)
+            , padding2 (px 0) (px 10)
+            ]
+        ]
+        [ H.div [] [ H.h3 [] [ H.text character.name ] ]
+        , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) character.notes
+        , viewCapstones character
+        , H.div [] <| List.map viewClass <| characterClasses character
+        ]
 
 
-type alias Skill =
-    { class : Class
-    , spell : Spell
-    , learnedAt : LearnedAt
-    , target : Target
-    , replace : Maybe Spell
-    }
+viewCapstones : Character -> H.Html msg
+viewCapstones character =
+    H.div
+        []
+    <|
+        List.concat
+            [ [ H.h4 [] [ H.text "Capstones" ] ]
+            , List.map viewCapstone <| capstonesByCharacter character
+            ]
 
 
-type LearnedAt
-    = LevelStat Int Stat
-    | Automatic
+viewCapstone : Capstone -> H.Html msg
+viewCapstone capstone =
+    H.div
+        [ At.css
+            [ displayFlex
+            , flexDirection row
+            , alignItems center
+            ]
+        ]
+        [ H.div [ At.css [ margin (px 5) ] ] [ H.text <| Debug.toString capstone.stat ]
+        , H.div [] [ H.text capstone.description ]
+        ]
 
 
-type alias Capstone =
-    { character : Character
-    , stat : Stat
-    , description : String
-    }
+viewClass : Class -> H.Html msg
+viewClass (Class class) =
+    H.div
+        []
+    <|
+        List.concat
+            [ [ H.div [] [ H.h4 [] [ H.text class.name ] ]
+              , H.div [] [ H.text class.maxStats ]
+              , H.ul [] <| List.map (\note -> H.li [] [ H.text note ]) class.notes
+              ]
+            , List.filter
+                (not << List.isEmpty)
+                [ skillsByStat Nothing <| classSkills <| Class class
+                , skillsByStat (Just STR) <| classSkills <| Class class
+                , skillsByStat (Just AGL) <| classSkills <| Class class
+                , skillsByStat (Just VIT) <| classSkills <| Class class
+                , skillsByStat (Just INT) <| classSkills <| Class class
+                , skillsByStat (Just PIE) <| classSkills <| Class class
+                , skillsByStat (Just LUK) <| classSkills <| Class class
+                ]
+                |> List.map viewSkills
+            ]
 
 
-type Target
-    = One
-    | OneOrAll
-    | All
-    | Self
+viewSkills : List Skill -> H.Html msg
+viewSkills skills_ =
+    H.div
+        [ At.css
+            [ margin (px 5)
+
+            -- , property "display" "grid"
+            -- , property "grid-template-columns" "repeat(4, 200px)"
+            , displayFlex
+            , flexDirection row
+            ]
+        ]
+        (skills_
+            |> List.map viewSkill
+            |> List.intersperse
+                (H.div
+                    [ At.css
+                        [ margin2 (px 0) (px 10) ]
+                    ]
+                    [ H.text "→" ]
+                )
+        )
 
 
-type Stat
-    = STR
-    | AGL
-    | VIT
-    | INT
-    | PIE
-    | LUK
+viewSkill : Skill -> H.Html msg
+viewSkill skill =
+    let
+        targetSuffix =
+            case skill.target of
+                One ->
+                    ""
+
+                OneOrAll ->
+                    "*"
+
+                All ->
+                    "#"
+
+                Self ->
+                    "^"
+
+        learnedAt =
+            case skill.learnedAt of
+                Automatic ->
+                    ""
+
+                LevelStat level stat ->
+                    String.concat
+                        [ " ("
+                        , String.fromInt level
+                        , " "
+                        , Debug.toString stat
+                        , ")"
+                        ]
+    in
+    H.div
+        []
+        [ H.text <| skill.spell.name ++ targetSuffix ++ learnedAt ]
 
 
 
