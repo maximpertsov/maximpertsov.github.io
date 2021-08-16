@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "yarn run parcel index.html --port=3004",
-    "build": "yarn run parcel build index.html",
+    "start": "yarn run parcel src/index.html --port=3004",
+    "build": "yarn run parcel build src/index.html",
     "test": "elm-test"
   },
   "devDependencies": {
