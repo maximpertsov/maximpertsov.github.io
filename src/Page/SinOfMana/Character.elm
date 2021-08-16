@@ -472,8 +472,7 @@ viewAll search =
     H.div
         [ At.css
             [ property "display" "grid"
-
-            -- , property "grid-template-columns" "repeat(auto-fit, minmax(300px, 1fr))"
+            , property "grid-template-columns" "repeat(auto-fit, minmax(500px, 1fr))"
             , property "justify-items" "center"
             ]
         ]
