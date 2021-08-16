@@ -73,7 +73,7 @@ all =
         CsvD.decodeCustom
             { fieldSeparator = '\t' }
             CsvD.FieldNamesFromFirstRow
-            decodeSpells
+            decodeSpell
             (String.trim raw)
 
 
@@ -101,8 +101,8 @@ find name =
 -- DECODE
 
 
-decodeSpells : CsvD.Decoder Spell
-decodeSpells =
+decodeSpell : CsvD.Decoder Spell
+decodeSpell =
     CsvD.into
         Spell
         |> CsvD.pipeline (CsvD.field "Spell" CsvD.string)
