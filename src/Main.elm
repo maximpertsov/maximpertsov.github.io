@@ -150,7 +150,7 @@ viewBody model =
             viewHome
 
         Just SinsOfMana ->
-            Page.SinOfMana.view SinOfManaMsg
+            Page.SinOfMana.view SinOfManaMsg model.sinOfMana
 
         Nothing ->
             viewNotFound

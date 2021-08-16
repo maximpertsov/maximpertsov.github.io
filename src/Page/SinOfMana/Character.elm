@@ -467,8 +467,8 @@ capstones =
 -- VIEW
 
 
-viewAll : H.Html msg
-viewAll =
+viewAll : String -> H.Html msg
+viewAll search =
     H.div
         [ At.css
             [ property "display" "grid"
@@ -477,8 +477,25 @@ viewAll =
             , property "justify-items" "center"
             ]
         ]
-    <|
-        List.map view characters
+        (characters
+            |> List.filter
+                (\character ->
+                    case search of
+                        "" ->
+                            True
+
+                        _ ->
+                            let
+                                toKey =
+                                    String.replace "-" ""
+                                        << String.replace " " ""
+                                        << String.toLower
+                                        << String.trim
+                            in
+                            String.contains (toKey search) (toKey character.name)
+                )
+            |> List.map view
+        )
 
 
 view : Character -> H.Html msg

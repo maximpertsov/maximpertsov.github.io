@@ -51,21 +51,21 @@ update msg model =
 -- VIEWS
 
 
-viewCharacters : H.Html msg
-viewCharacters =
+viewCharacters : String -> H.Html msg
+viewCharacters search =
     H.div
         []
         [ H.h2 [] [ H.text "Characters" ]
-        , Character.viewAll
+        , Character.viewAll search
         ]
 
 
-view : (Msg -> msg) -> H.Html msg
-view toMsg =
+view : (Msg -> msg) -> Model -> H.Html msg
+view toMsg model =
     H.div
         []
         [ H.input [ Ev.onInput (toMsg << Search) ] []
-        , viewCharacters
+        , viewCharacters model.search
         , H.h2 [] [ H.text "Spells" ]
         , Spell.viewAll
         , H.h2 [] [ H.text "Enemies" ]
