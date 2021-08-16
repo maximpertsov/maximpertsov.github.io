@@ -40,6 +40,9 @@ type alias Model =
     -- Url Navigation
     , key : Nav.Key
     , route : Maybe Route
+
+    -- sinOfMana
+    , sinOfMana : Page.SinOfMana.Model
     }
 
 
@@ -73,6 +76,7 @@ init flags url key =
             -- Url Navigation
             , key = key
             , route = P.parse router url
+            , sinOfMana = Page.SinOfMana.init
             }
     in
     ( model, Cmd.none )
@@ -85,6 +89,7 @@ init flags url key =
 type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | SinOfManaMsg Page.SinOfMana.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -100,6 +105,11 @@ update msg model =
 
         UrlChanged url ->
             handleUrlChanged url model
+
+        SinOfManaMsg subMsg ->
+            ( { model | sinOfMana = Page.SinOfMana.update subMsg model.sinOfMana }
+            , Cmd.none
+            )
 
 
 handleUrlChanged : Url.Url -> Model -> ( Model, Cmd Msg )
@@ -140,7 +150,7 @@ viewBody model =
             viewHome
 
         Just SinsOfMana ->
-            Page.SinOfMana.view
+            Page.SinOfMana.view SinOfManaMsg
 
         Nothing ->
             viewNotFound

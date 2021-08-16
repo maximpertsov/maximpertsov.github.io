@@ -1,4 +1,4 @@
-module Page.SinOfMana exposing (view)
+module Page.SinOfMana exposing (Model, Msg, init, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
@@ -17,6 +17,37 @@ import Url.Parser as P exposing ((</>))
 
 
 -- MODEL
+
+
+type alias Model =
+    { search : String }
+
+
+
+-- INITIALIZE
+
+
+init : Model
+init =
+    { search = "" }
+
+
+
+-- UPDATE
+
+
+type Msg
+    = Search String
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Search search ->
+            { model | search = search }
+
+
+
 -- VIEWS
 
 
@@ -29,11 +60,12 @@ viewCharacters =
         ]
 
 
-view : H.Html msg
-view =
+view : (Msg -> msg) -> H.Html msg
+view toMsg =
     H.div
         []
-        [ viewCharacters
+        [ H.input [ Ev.onInput (toMsg << Search) ] []
+        , viewCharacters
         , H.h2 [] [ H.text "Spells" ]
         , Spell.viewAll
         , H.h2 [] [ H.text "Enemies" ]
