@@ -189,6 +189,10 @@ classes =
     , lord
     , swordmaster
     , duelist
+    , grappler
+    , monk
+    , bashkar
+    , godHand
     ]
 
 
@@ -276,7 +280,87 @@ duelist =
         }
 
 
+grappler : Class
+grappler =
+    Class
+        { name = "Grappler"
+        , character = kevin
+        , maxStats = "10/9/10/8/8/8"
+        , item = Nothing
+        , predecessor = Nothing
+        , notes = []
+        }
 
+
+monk : Class
+monk =
+    Class
+        { name = "Monk"
+        , character = kevin
+        , maxStats = "15/14/18/13/14/14"
+        , item = Nothing
+        , predecessor = Just grappler
+        , notes = []
+        }
+
+
+bashkar : Class
+bashkar =
+    Class
+        { name = "Bashkar"
+        , character = kevin
+        , maxStats = "16/15/18/14/13/13"
+        , item = Nothing
+        , predecessor = Just grappler
+        , notes = []
+        }
+
+
+godHand : Class
+godHand =
+    Class
+        { name = "God Hand"
+        , character = kevin
+        , maxStats = "29/29/32/28/29/29"
+        , item = Just "Gold Wolf Soul"
+        , predecessor = Just monk
+        , notes = []
+        }
+
+
+
+-- Warrior Monk:\t28/30/31/29/28/30
+-- class change item: Silver Wolf Soul
+-- spell list:
+-- Transshape (15 PIE), Water Jutsu (18 PIE), Heal Light* (22 PIE)
+-- Leaf Saber^ (16 INT), Power Up* (21 INT), Mind Down (26 INT)
+-- Body Change (16 AGL), Energy Ball^ (20 AGL), Power Down (25 AGL)
+-- Speed Down (15 LUCK), Fire Ball (19 LUCK), Analyse (23 LUCK)
+--
+-- Dervish:\t29/30/33/29/28/29
+-- class change item: Demon Wolf Soul
+-- stronger wolf form
+-- spell list:
+-- Fire Breath (15 PIE), Power Down (18 PIE), Anti-Magic (22 PIE)
+-- Moon Saber (16 INT), Protect Down (21 INT), Half Vanish (26 INT)
+-- Poison Breath (16 AGL), Energy Ball (20 AGL), Power Up^ (25 AGL)
+-- Speed Down (15 LUCK), Rockfall (19 LUCK), Analyse (23 LUCK)
+--
+-- Death Hand:\t30/31/32/30/27/28
+-- class change item: Death Wolf Soul
+-- spell list:
+-- Rockfall (15 PIE), Leaf Saber (18 PIE), Dark Force* (22 PIE)
+-- Flame Saber (16 INT), Diamond Saber^ (20 INT), Aura Wave (25 INT)
+-- Body Change* (16 AGL), Thunder Jutsu (20 AGL), Lunatic# (25 AGL)
+-- Speed Up* (15 LUCK), Dark Saber* (19 LUCK), Demon Breath# (23 LUCK)
+--
+-- capstones
+-- STR - enemies spawn with -15 p.def&m.def
+-- AGL - when a weapon attack can inflict a status effect (even if immune) subtract another 30 HP or 40 HP on critical
+-- VIT - draw aggro
+-- INT - sword magic +atk gives 20% instead of 10% (party)
+-- PIE - Heal Light also gives +1 TP
+-- LUK - party takes less damage from critical hits
 -- Skills
 
 
@@ -353,6 +437,19 @@ skills =
     , toSkill duelist "Flame Saber" One (LevelStat 16 INT) Nothing
     , toSkill duelist "Transshape" Self (LevelStat 19 INT) Nothing
     , toSkill duelist "Aura Wave" One (LevelStat 22 INT) Nothing
+    , toSkill monk "Heal Light" One (LevelStat 11 PIE) Nothing
+    , toSkill godHand "Heal Light" One (LevelStat 15 PIE) Nothing
+    , toSkill godHand "Moon Saber" One (LevelStat 18 PIE) Nothing
+    , toSkill godHand "Triple Spell" All (LevelStat 22 PIE) Nothing
+    , toSkill godHand "Ice Saber" One (LevelStat 16 INT) Nothing
+    , toSkill godHand "Thunder Saber" Self (LevelStat 20 INT) Nothing
+    , toSkill godHand "Aura Wave" Self (LevelStat 25 INT) Nothing
+    , toSkill godHand "Tinkle Rain" OneOrAll (LevelStat 16 AGL) Nothing
+    , toSkill godHand "Power Up" OneOrAll (LevelStat 20 AGL) Nothing
+    , toSkill godHand "Life Booster" One (LevelStat 25 AGL) Nothing
+    , toSkill godHand "Protect Down" One (LevelStat 15 LUK) Nothing
+    , toSkill godHand "Saint Saber" Self (LevelStat 19 LUK) Nothing
+    , toSkill godHand "Magic Shield" One (LevelStat 23 LUK) Nothing
     ]
 
 
@@ -521,61 +618,7 @@ A character may only know 10 spells at once; final classes offer 12 spells and c
 Once the 10 spell limit is reached it is no longer possible to learn new spells or spell upgrades by level up.
 
 Kevin
--dual attacks
--wolf form increases attack by (3% + VIT)
 
-base:\t\t10/9/10/8/8/8
-spell list:
-no spells
-
-Monk:\t\t15/14/18/13/14/14
-spell list:
-Heal Light (11 PIE)
-
-Bashkar:\t16/15/18/14/13/13
-spell list:
-no spells
-
-God Hand:\t29/29/32/28/29/29
-class change item: Gold Wolf Soul
-spell list:
-Heal Light (15 PIE), Moon Saber (18 PIE), Triple Spell# (22 PIE)
-Ice Saber (16 INT), Thunder Saber^ (20 INT), Aura Wave^ (25 INT)
-Tinkle Rain* (16 AGL), Power Up* (20 AGL), Life Booster (25 AGL)
-Protect Down (15 LUCK), Saint Saber^ (19 LUCK), Magic Shield (23 LUCK)
-
-Warrior Monk:\t28/30/31/29/28/30
-class change item: Silver Wolf Soul
-spell list:
-Transshape (15 PIE), Water Jutsu (18 PIE), Heal Light* (22 PIE)
-Leaf Saber^ (16 INT), Power Up* (21 INT), Mind Down (26 INT)
-Body Change (16 AGL), Energy Ball^ (20 AGL), Power Down (25 AGL)
-Speed Down (15 LUCK), Fire Ball (19 LUCK), Analyse (23 LUCK)
-
-Dervish:\t29/30/33/29/28/29
-class change item: Demon Wolf Soul
-stronger wolf form
-spell list:
-Fire Breath (15 PIE), Power Down (18 PIE), Anti-Magic (22 PIE)
-Moon Saber (16 INT), Protect Down (21 INT), Half Vanish (26 INT)
-Poison Breath (16 AGL), Energy Ball (20 AGL), Power Up^ (25 AGL)
-Speed Down (15 LUCK), Rockfall (19 LUCK), Analyse (23 LUCK)
-
-Death Hand:\t30/31/32/30/27/28
-class change item: Death Wolf Soul
-spell list:
-Rockfall (15 PIE), Leaf Saber (18 PIE), Dark Force* (22 PIE)
-Flame Saber (16 INT), Diamond Saber^ (20 INT), Aura Wave (25 INT)
-Body Change* (16 AGL), Thunder Jutsu (20 AGL), Lunatic# (25 AGL)
-Speed Up* (15 LUCK), Dark Saber* (19 LUCK), Demon Breath# (23 LUCK)
-
-capstones
-STR - enemies spawn with -15 p.def&m.def
-AGL - when a weapon attack can inflict a status effect (even if immune) subtract another 30 HP or 40 HP on critical
-VIT - draw aggro
-INT - sword magic +atk gives 20% instead of 10% (party)
-PIE - Heal Light also gives +1 TP
-LUK - party takes less damage from critical hits
 
 
 
