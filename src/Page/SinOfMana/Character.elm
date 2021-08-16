@@ -480,11 +480,11 @@ viewAll search =
         (characters
             |> List.filter
                 (\character ->
-                    case search of
-                        "" ->
+                    case String.split " " search of
+                        [] ->
                             True
 
-                        _ ->
+                        searches ->
                             let
                                 toKey =
                                     String.replace "-" ""
@@ -492,7 +492,7 @@ viewAll search =
                                         << String.toLower
                                         << String.trim
                             in
-                            String.contains (toKey search) (toKey character.name)
+                            List.any (\search_ -> String.contains (toKey search_) (toKey character.name)) searches
                 )
             |> List.map view
         )
