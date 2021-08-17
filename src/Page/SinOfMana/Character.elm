@@ -1,7 +1,6 @@
 module Page.SinOfMana.Character exposing (Character, viewAll)
 
 import Css exposing (..)
-import Debug
 import Html.Styled as H
 import Html.Styled.Attributes as At
 import Page.SinOfMana.Spell as Spell exposing (Spell)
@@ -63,6 +62,28 @@ type Stat
     | INT
     | PIE
     | LUK
+
+
+statToString : Stat -> String
+statToString stat =
+    case stat of
+        STR ->
+            "STR"
+
+        AGL ->
+            "AGL"
+
+        VIT ->
+            "VIT"
+
+        INT ->
+            "INT"
+
+        PIE ->
+            "PIE"
+
+        LUK ->
+            "LUK"
 
 
 
@@ -534,7 +555,7 @@ viewCapstone capstone =
             , alignItems center
             ]
         ]
-        [ H.div [ At.css [ margin (px 5) ] ] [ H.text <| Debug.toString capstone.stat ]
+        [ H.div [ At.css [ margin (px 5) ] ] [ H.text <| statToString capstone.stat ]
         , H.div [] [ H.text capstone.description ]
         ]
 
@@ -614,7 +635,7 @@ viewSkill skill =
                         [ " ("
                         , String.fromInt level
                         , " "
-                        , Debug.toString stat
+                        , statToString stat
                         , ")"
                         ]
     in

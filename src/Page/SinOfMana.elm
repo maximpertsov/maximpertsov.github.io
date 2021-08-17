@@ -3,7 +3,6 @@ module Page.SinOfMana exposing (Model, Msg, init, update, view)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Css exposing (..)
-import Debug
 import Html.Styled as H
 import Html.Styled.Attributes as At
 import Html.Styled.Events as Ev
